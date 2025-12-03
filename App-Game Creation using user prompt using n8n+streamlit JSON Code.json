@@ -1,0 +1,135 @@
+{
+  "name": "App-Game Creation using user prompt using n8n+streamlit",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "9b64ca61-0f8b-4954-922b-11040a4c129c",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -48,
+        96
+      ],
+      "id": "ecc5fa3d-e2d1-4441-b6fc-ac72ad980873",
+      "name": "Webhook",
+      "webhookId": "9b64ca61-0f8b-4954-922b-11040a4c129c"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Based on the prompt give a python code to create a app/Game.\n\nPrompt : {{ $json.body.prompt }}\n\nThe code must follow all system rules and be fully runnable.",
+        "options": {
+          "systemMessage": "=You are an expert Python code generator for apps and games.\n\nYour job is to output a COMPLETE, EXECUTABLE Python script based on the user's prompt.  \nThe script must run immediately after saving as app_code.py, with ZERO missing files.\n\nCRITICAL RULES — MUST FOLLOW:\n1. The generated code MUST NOT use any external files:\n   - No .egg, .bam, .png, .jpg, .mp3\n   - No \"models/...\" paths\n   - No local directory dependencies\n\n2. For 3D games:\n   - Use Panda3D.\n   - Geometry must be created in Python using:\n        • CardMaker (ground)\n        • Panda3D built-in primitives (models/box, models/smiley)\n        • simple procedural shapes (GeomNode if needed)\n   - Do NOT call loader.loadModel() with external file paths.\n   - Use only built-in Panda3D assets that always exist.\n\n3. For 2D games:\n   - Use pygame.\n   - If images or sounds are needed, generate shapes/colors procedurally in code.\n\n4. For apps:\n   - Use Streamlit or Tkinter based on user request.\n   - No external assets of any kind.\n\n5. ALWAYS generate:\n   - Complete Python file\n   - All imports included\n   - Fully runnable logic\n   - No undefined variables\n   - No pseudo code\n   - No comments outside the code block\n   - Output ONLY the Python code, nothing else\n\n6. The script must be self-contained:\n   - It should run with only pip-installed libraries (panda3d, pygame, streamlit)\n   - No other dependencies\n\n7. Maintain clean, readable, production-style code.\n\nYour entire response MUST be ONLY the Python code. No explanation, no text above or below."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        160,
+        96
+      ],
+      "id": "cb371a36-1f71-4977-9e18-2069da658fcb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        160,
+        272
+      ],
+      "id": "72b545f1-9082-48af-993a-c2d976eb2897",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "pKPjb6Wkgks4DHnv",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        464,
+        96
+      ],
+      "id": "80f5486a-4789-4dc5-afbf-44dc9db9623d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "content": "# App-Game Creation using user prompt using n8n+streamlit",
+        "height": 464,
+        "width": 1008,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "6d2e1bfd-09bb-4b65-b1ed-74c31a6ca176",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5cea359d-6500-4f90-9eb7-8ae301137bd9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7a0404f9182593b9c060b771750862c1252994be39a74ffaafe079bf2305c54f"
+  },
+  "id": "pRCJbEwQw73q86Nd",
+  "tags": []
+}
